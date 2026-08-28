@@ -1,0 +1,12 @@
+{
+    "readTable":{
+    "header":"Tables Lab",
+    "role":"Pavan 5"
+},
+"readTableTwoLoop":{
+    "header":"Tables Lab",
+    "tableHeader":"Name",
+    "data":"Pavan 5"
+
+}
+}

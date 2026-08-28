@@ -1,0 +1,15 @@
+{
+   "Valid": {
+    "url":"http://localhost:8000/index.html",
+    "usn":"Payramid",
+    "pwd":"Pass@123",
+    "remember":"yes"
+}, 
+"Invalid":{
+    "url":"http://localhost:8000/index.html",
+    "usn":"Payramid1",
+    "pwd":"Pass@1234",
+    "remember":"no",
+    "message":"Invalid username or password"
+}
+}

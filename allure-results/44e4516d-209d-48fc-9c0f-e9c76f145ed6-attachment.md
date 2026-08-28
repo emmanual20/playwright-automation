@@ -1,0 +1,113 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: troyGamesProject\tablesLab.test.ts >> readTable
+- Location: tests\troyGamesProject\tablesLab.test.ts:8:5
+
+# Error details
+
+```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('//*[@id="largeTableBody"]/tr/td').first()
+Expected substring: "Pavan 5"
+Received string:    ""
+Timeout: 5000ms
+
+Call log:
+  - Expect "toContainText" with timeout 5000ms
+  - waiting for locator('//*[@id="largeTableBody"]/tr/td').first()
+    14 × locator resolved to <td>…</td>
+       - unexpected value ""
+
+```
+
+```yaml
+- cell:
+  - checkbox
+```
+
+# Test source
+
+```ts
+  1  | import {Page,Locator,expect} from '@playwright/test'
+  2  | 
+  3  | export class CommonUtils{
+  4  |     readonly page:Page
+  5  |     constructor(page:Page){
+  6  |         this.page=page
+  7  |     }
+  8  | 
+  9  |     async clickAndHighlight(element:Locator,elementName:string){
+  10 |         console.log(`Clicking element : ${elementName}`)
+  11 |         await element.scrollIntoViewIfNeeded()
+  12 |          // Highlight element in red
+  13 |         await element.evaluate((el) => {
+  14 |             (el as HTMLElement).style.border = '3px solid red';
+  15 |             
+  16 |         });
+  17 |         await element.click()
+  18 |         console.log(`Clicked element : ${elementName}`)
+  19 |     }
+  20 | 
+  21 |     async fillAndHighlight(element:Locator,value:string,elementName:string){
+  22 |         console.log(`Filling ${value} in Element ${elementName}`);
+  23 |         await element.scrollIntoViewIfNeeded()
+  24 |           // Highlight element in red
+  25 |          await element.evaluate((el) => {
+  26 |             const e = el as HTMLElement;
+  27 |             e.style.border = '3px solid green';
+  28 |             e.style.backgroundColor = 'rgba(9, 227, 56, 0.15)';
+  29 |             e.style.boxShadow = '0 0 10px green';
+  30 |         });
+  31 |         await element.fill(value)
+  32 |          console.log(`Filled ${value} in Element ${elementName}`);
+  33 |     }
+  34 | 
+  35 |     async checkboxCheckAndHighlight(element:Locator){
+  36 |         console.log(`Check checkbox`);
+  37 |         await element.scrollIntoViewIfNeeded()
+  38 |         await element.evaluate((el) => {
+  39 |             const e = el as HTMLElement;
+  40 |             e.style.border = '3px solid orange';
+  41 |             e.style.backgroundColor = 'rgba(70, 8, 243, 0.15)';
+  42 |             e.style.boxShadow = '0 0 10px orange';
+  43 |         });
+  44 |         if(await element.isChecked()){
+  45 |             console.log(`Checkbox already checked`);
+  46 |         }else{
+  47 |             await element.check()
+  48 |             console.log(`Checkbox checked`);
+  49 |             
+  50 |         }
+  51 |         
+  52 |     }
+  53 | 
+  54 |     async visibleAndHighlight(element:Locator,elementName:string){
+  55 |         console.log(`${elementName} checking Visibility`);
+  56 |         await element.scrollIntoViewIfNeeded()
+  57 |         await element.evaluate((el) => {
+  58 |             (el as HTMLElement).style.border = '6px solid red';
+  59 |         });
+  60 |         await expect(element).toBeVisible({timeout:40000})
+  61 |         console.log(`${elementName} is Present and Visible`);
+  62 |     }
+  63 | 
+  64 |     async containTextAndHighlight(element:Locator,value:string,elementName:string){
+  65 |         console.log(`Verify ${elementName} contain ${value}`);
+  66 |         await element.scrollIntoViewIfNeeded()
+  67 |         await element.evaluate((el) => {
+  68 |             (el as HTMLElement).style.border = '3px solid red';
+  69 |         });
+> 70 |         await expect(element).toContainText(value)
+     |                               ^ Error: expect(locator).toContainText(expected) failed
+  71 |         console.log(`${elementName} contains ${value}`);
+  72 |     
+  73 |     }
+  74 | }
+```

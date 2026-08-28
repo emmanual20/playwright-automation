@@ -1,0 +1,12 @@
+Filling Payramid in Element Username
+Filled Payramid in Element Username
+Filling Pass@123 in Element Password
+Filled Pass@123 in Element Password
+Check checkbox
+Checkbox checked
+Clicking element : Login Button
+Clicked element : Login Button
+Dashboard Header checking Visibility
+Dashboard Header is Present and Visible
+Clicking element : Click on Table
+Clicked element : Click on Table

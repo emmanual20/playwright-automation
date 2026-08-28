@@ -1,0 +1,536 @@
+Introduction
+Playwright is na open source automation frameowrk created by Microsoft foe web application testing. Ts is designed to help you write tests that simulate real user interactions across diffrent browsers and devices
+Browersr supported:Chrome,Firefor and webkit(Safari)
+Application Supported : Web browser apps, Mobile Web apps,API
+Language Supported:JS,TS,Paython,c# and Java
+OS Supported: Windows, Linux,MacOS,Supports CI Runs
+
+Additional Features:
+-Auto Waiting
+-Tracing and Debugging
+-Built in Runner/frameowrk
+-Built-in reporter,custom reports
+-Built-in assertions
+-Types of testing - Functional, End to End, API testing and Visual regression testing
+
+PLAYWRIGHT-Installations
+
+Pre-Requisite required:
+1.IDE (Visual Studio Code)
+2.Node JS Installations
+
+3.Create project folder-----open in VS Code
+   3.1 using Playwright Extension
+   3.2 Using command npm init plaaywright@latest
+
+   to CHeck node and npm versions
+
+   node --v
+   npm --v
+
+   npm:
+   Its a tool and a package (global repository)
+   As a tool, it lets you install and manage packages
+   As a repository, it hoist millions of open source JS packages
+
+npx=node package executer
+
+Async / await in js and fixtures:
+
+await/async in java script
+
+await operator is used to wait for promise, it allows us to wait untill promise has been completed before moving onto next line.
+JavaScript require to use of the await keyword inside a fuction marked witha async keyword
+
+async and await launched in 2017 in es8 release
+
+FIxtures:
+
+In Playwright, a fixture is a reusable piece of setup code that prepares something for your tests-like opening a browser,logging in,creating data,etc.
+Think of them AS PRE-SET tools or test ingredients.
++-----------------+-------------------------+--------------------------------------------------------+
+|  Fixture        |     Scope               |  Description                                           |
++-----------------+-------------------------+--------------------------------------------------------+
+page               Test                       A single browser tab (isolated for each test)          |
+browser            Worker                     The browser instance (shared across tests in worker)   |
+browsername        Worker                     The name of the browser being used (e.g. chromium)     |
+context            Test                       Browser Context (like incognito,isolated profile)      |
+request            Test                       Used to send HTTP API requests                         |
++-----------------+--------------------------+-------------------------------------------------------+
+
+Test Annotations in Playwright
+
+Playwright provides annotations to manage test execution for various scenarios:
+skipping, focusing,marking slow, or expecting failures
+
+test.skip----> Skip test
+test.only-----> Run singlle test
+test.fail------>
+test.fixme
+test.slow
+test.describe
+test.timeout
+
+
+COMMANDS TO RUN Test
+
+->Run all Test= npx playwright test
+->Run a specific test file = npx playwright test tests/example.spec.js
+->Run in headed mode (browser window visible) = npx playwright test --headed
+->Run a test with specific title = npx playwright test -g "tour test title"
+->Run only the last failed test = npx playwright test --last-failed
+->Run on one browser = 
+    npx playwright test --project=chromium
+    npx playwright test --project=firefox
+    npx playwright test --project=webkit
+
+->Run on multiple browsers
+npx playwright test --project=webkit --project=firefox
+
+->Debug tests in Inspector mode (Step-By-Step)
+npx playwright test --Debug
+
+=>Open html report npx playwright show-report --port=9999
+
+
+Browser Controls
+
+Browser controls in Playwright refer to a set of commands or methods used to programmatically control and intract with browser during automated testing
+
+1. page.setViewportSize({ width, height})
+
+Sets the viewport size for the current browser tab.
+
+Syntax:
+
+await page.setViewportSize({ width: 1920, height: 1080});
+
+2. page.viewposrtSize() =returns the current window viewport size
+
+Syntax: Const size=page.viewposrSize();
+
+3.page.title() = Gets the title of the current web page
+
+Syntax: Const title =  await page.title();
+
+4. page.url() = Get current page url
+
+Syntax: const url= await page.url()
+
+5. context.cookies() = Retrives all cookies for the current context
+
+Syntax: const cookies =  await context.cookies();
+
+6. chromium.launch() = Launches a Chromium browser instance
+
+Syntax: const browser=await chromium.launch();
+
+7. browser.newContext() = Creates a new browser context (like a fresh browser profile)
+
+Syntax: const context= await browser.newContext();
+
+8. context.newPage() = Opens a new tab/page in the browser context
+Syntax: const page=await context.newPage();
+
+9.page.goto('URL') = Navigate to specific URL
+await page.goto("URL")
+
+10. page.screenshot({path})
+
+Takes a screenshot of the current page
+Syntax: await page.screenshot({path: 'example.png'})
+
+11.browser.close()
+
+Closes the browser instance
+
+Syntax : await browser.close()
+
+LOCATING ELEMENT
+
+What are Locators?
+->Locators are selectors Used to identify and intract with elements on a webpage during tests.
+->Locators can be created using the page.locator() methods
+
+Locator Method
+Syntax: page.locator(selector);
+page.locator(selector,options)
+
+1. CSS selector
+
+CSS selectors identify elements based on HTML tag,class,id and attribute
+
++-----------------+-------------------------+---------------------------------------------+
+| Selector Type   | Syntax                  | Example                                     |
++-----------------+-------------------------+---------------------------------------------+
+| Class           | .className              | .login-btn                                  |
+| ID              | #idValue                | #submitBtn                                  |
+| Tag + Class     | tag.className           | button.login-btn                            |
+| Tag + ID        | tag#idValue             | input#username                              |
+| Attribute       | [attribute='value']     | [name='email']                              |
+| Tag + Attribute | tag[attribute='Value']  | input[type='password']                      |
++-----------------+-------------------------+---------------------------------------------+
+
+
+2. Xpath
+
+XPath (XML Path Language) is a query Language used to locate and navigate elements in an XML or HTML document
+
+Syntax:
+//tagName[@attribute='value']
+Example: //input[@id='username']//button[@type='submit']
+
+
+3. getBy methods
+
+ 1. getByLabel()
+ ->Locates inout elements by their associated <label>,aria-label, or aria-labelledby.
+ ->Use while working with form fields that are properly labelledby
+
+ Syntax: page.getByLabel("labelText")
+
+ 2.getByPlaceholder()
+ ->Locates inout fields using their placeholder attribute
+ ->Use when form fields don't have labels but placeholder labelText
+
+ Syntax: page.getByPlaceholder("placeholderText")
+
+ 3.getByText()
+ -> Finds elements that contains a given visible test (partial or full match).
+ -> Use for selecting non-intractive elements (like<div>,<p>,etc.) using getByText
+
+ Syntax: page.getByText("text",optionss?)
+
+ 4.getByAltText()
+ -> Finds elements (typically <img>,<area>) using their alt text.
+ Use when targetting images or other media that use alt attributes for accessibility.
+
+ Syntax: page.getByAltText("altText")
+
+ 5.getByTitle()
+-> Locates elements by their title attribute (used for tooltips or accessibility).
+-> Use when elements (like icons or buttons) include a tittle attribute for accessibility or extra context.
+
+Syntax: page.getByTitle("tittleText")
+
+6.getByRole()
+->Locates elements using ARIA roles,ARIA attribute, and accessible names.(ARIA=Accesible Rich Internet Application)
+->This is the most accurate and recommended way to locate elements ----Mimics how users and screen readers intract with a webpage
+
+Syntax: page.getByRole(role,options?)
+Common roles: button, link,heading,checkbox,textbox,table,etc.
+
+7.getBytestId()
+
+->Locates an element using a data-testid attribute (or any custom attribute configured as a test ID).
+->Perfect for elements that don't have meaningful labels, roles, or text, especially in custom components or dynamic content.
+
+Syntax: page.getByTestId('Your test')
+
+//page.pause(3000)\\ stop script for 3 sec
+
+WEBELEMENT Controls
+
+1.fill('Text to enter')-> erase and fill
+2.type('Typed Text')-> not erase and fill chracter by character, slower compare to fill (not reccomended)
+3.click() ->
+4.innerText()-> return visible text content (only user can see that text)
+5.textContents()-> return full text content (indivisual Elements)
+5.1.inputValue() -> return values which is entered by user (text not present in DOM)
+6.allTextContents() ->  return full text content in Array of String (multiple Elements) ->
+7.getAttribute('attribute_name') -> for single unique Attribute
+8.all() -> fives address for multiple elements, return in array of address
+9.selectOptions('option_value')- for dropdowns
+10.isVisible() -> return boolean , no autowait
+11.isEnabled() -> return boolean and check Enable or disabled, no autowait
+11.1 isDisabled()-> return boolean and check Enable or disabled, no autowait
+11.2 isEditable() -> return boolean and check Editable or not, no autowait
+12.isChecked() -> no autowait, verify checkbox is checked or not
+13.waitFor({ state: 'visible'}) -- Syncronization Method
+    Syntax : page.locator('').waitFor({Options})
+    Options-----------State:    'attached' .waitFor({state:'attached'}) //Default
+                |               'detached' - wait till elemet detached from DOm .waitFor({state:'detached'})
+                |               'Visible' - wait till elemet attached and visible in DOM .waitFor({state:'visible'})
+                |               'Hidden'  - wait for element is hidden .waitFor({state:'Hidden'})
+                |---- timeout: in millisecond(5000)
+
+                .waitFor({state:'Visible',timeout:3000})
+
+
+
+TYPES OF WAIT=>
+
+- A wait statement is a mechanism that pauses the execution of a test script untill a specific condition is met or a defined timeout period passes.
+-These are important for handling dynamic and asynchronous content that doesn't load all at once on modern websites.
+
+WHY ARE WAIT STATEMENTS ARE NECCESSARY?
+
+Without wait statements, your test script might
+->Try to click a button before it becomes clickable
+->Attempt to read test from an element that hasn't loaded yet
+->Fail due to transutions, animations, or slow network resposes.
+
+Wait statements help to:
+
+->reduce flakiness in tests
+->Ensures consistency across diffrent environment
+->Improve reliabilty and reflect actual user behaviour.
+
+Types of Waits in Playwright:=>
+
+1. Auto-Waiting(Smart Built-in Waits)
+PLAYWRIGHT ACTIONABILITY CHECKS
+========================================================================================
+Action                          Visible   Stable   Receives Events   Enabled   Editable
+----------------------------------------------------------------------------------------
+locator.check()                 Yes       Yes      Yes               Yes       -
+locator.click()                 Yes       Yes      Yes               Yes       -
+locator.dblclick()              Yes       Yes      Yes               Yes       -
+locator.setChecked()            Yes       Yes      Yes               Yes       -
+locator.tap()                   Yes       Yes      Yes               Yes       -
+locator.uncheck()               Yes       Yes      Yes               Yes       -
+locator.hover()                 Yes       Yes      Yes               -         -
+locator.dragTo()                Yes       Yes      Yes               -         -
+locator.screenshot()            Yes       Yes      -                 -         -
+locator.fill()                  Yes       -        -                 Yes       Yes
+locator.clear()                 Yes       -        -                 Yes       Yes
+locator.selectOption()          Yes       -        -                 Yes       -
+locator.selectText()            Yes       -        -                 -         -
+locator.scrollIntoViewIfNeeded() -       Yes      -                 -         -
+locator.blur()                  -         -        -                 -         -
+locator.dispatchEvent()         -         -        -                 -         -
+locator.focus()                 -         -        -                 -         -
+locator.press()                 -         -        -                 -         -
+locator.pressSequentially()     -         -        -                 -         -
+locator.setInputFiles()         -         -        -                 -         -
+
+Legend:
+Yes = Playwright performs the actionability check
+-   = No check is performed
+2.Hard-Coded Waits (Static Wait)
+
+    A hardcoded wait is a pause in test execution for a fixed period of time, regardless of whether the application is ready or not
+    Syntax-> await page.waitForTimeout(milliseconds)
+
+3. Explicit Wait
+
+    Explicit waits are delibrate conditions that your automation script waits for before processing to the next step. Instead of blindly waiting for a foxed amount of time, they untill a specific condition is met-which makes your tests more reliable and faster.
+    Web Applications often load data asynchronously(AJAX,JavaScript rendering).If you try to click, type, or validate something before it's ready, the test will fail.
+
+    Explicit wait so;ves thuis by:
+
+    -Ensuring elements are present ,visible, or in a correct state
+    -Waiting for page navigattion or network to completed
+    -Verifying text or data appears dynamically
+
+    3.1 Element Based Waits
+        ->Wait for text
+            Wait untill specific visible text appears on the page (inside any element)
+            Syntax: await page.locator('text="Expected text"').waitFor();
+        Note:
+            -This wait untill an elememt containing the exact text appears and become visible.
+            -Case-sensitive by default.
+
+        ->wait for timeout
+            Wait for specific timeout with element state (like visible, attached,etc).
+            Syntax: await page.locator('#element-id').waitFor({timeout:5000,state:'visible'});
+
+            Parameters:
+            -timeout: time in milliseconds
+            -state: one of 'attached','detached','visible','hidden'
+
+        ->wait for selector
+            Wait untill an element matching the selector appears in the DOM
+            Syntax: await page.waitForSelector("#element-id")
+        Note:
+            You can also add {state: 'visible'} or other states to this function
+
+        ->wait for element state
+            Wait for an element to reach a certain DOM state like:
+            -visible: shown on screen
+            -hidden: in DOM but not shown
+            -attached: present in DOM
+            -detached: removed from DOM
+            Syntax: await page.locator('#element-id').waitFor({state:'Visible'})
+
+    3.2 Page Waits
+        ->Navigation wait
+            waitForNavigation()
+            ->waitForNavigation() is an explicit wait method in Playwright that waits for the page to finish navigating before proceeding.
+            This is esential when your test script depends on anew page or URL being loaded, such as after clicking a link or submitting a form.
+
+        ->Load-state wait
+         waitForLoadState()
+            ->waitForLoadState() is a page-level explicit wait in Playwright that pauses the script untill the page reaches a specific load state.
+            It's helpful when you want to make sure the page is ready before interacting with elements,especiall after:
+            Navigations,form submissions
+            JavaScript based updates
+            State (optional) 
+            -load: Waits untill the entire pageis loaded (HTML, images,styles,scripts)
+            -domcontentloaded: Waits untill the initial HTML is fully parsed
+            -networkidle: Waits untill there are no active network connects for at least 500ms
+
+            Syntax: await page.waitForLoadState('state',{options});
+
+        ->waitForEvent()
+            ->waitForEvent() is used to pause your script untill a specific event happens on the page or browser context.
+            It's usefull when something happens asynchronously or outside your dicrect control- like a new page opening, a file downloading, or a dialog box appearing.
+
+            Syntax: const evenPayLoad = await page.waitForEvent('eventName',{options});
+
+            => eventName: The name of the event to wait for (like 'popup','download','dialogue',etc.)
+            options: Optional timeout
+
+    3.3 Custom Wait
+
+        -> waitForFunction()
+            waitForFunction() is used to pause your script untill a custom JavaScript consition inside the browser returns true.
+            It is helpful when waiting for something that doesn't have a fixed selector or involves dynamic DOM changes, like:
+
+            -A looader disappearing
+            -Text appearing
+            -Element count increasing
+
+        Syntax: await page.waitForFunction(()=>{ return condition;},options);
+
+        await page.waitForFunction(()=>{document.querySelector('CSS').textContent==='loaded'})
+
+
+MOUSE Control
+
+    click,dbclick,move,up,down,hover
+
+
+Scrolling and Drag and dropdowns
+
+    Wheel(x,y)
+                        Y-Axis(Negative,Up)
+                      ↑
+                      |
+                      |
+                      |
+                      |
+                      |
+                      |
+←---------------------+----------------------→ X-Axis(Positive,Right)
+(Negative,left)       |
+                      |
+                      |
+                      |
+                      |
+                      |
+                      ↓(Positive,Down)
+
+
+Srolling and Drag and drop
+-page.locator('#element-id').scrollIntoViewIfNeeded()
+-page.locator('#element-id').hover()
+-page.locator('#element-id').down()
+-page.locator('#element-id').up()
+-let bix=page.locator('#element-id').boundingBox(); return(x,y,width.height)
+let source=page.locator('#element-id')
+let target=page.locator('#element-id')
+await source.dragTo(target)
+
+==KEYBOARD ACTION==
+Playwright provides a powerfull and flexible keyboard API that allows testers to simulate real user keyboard interactions in the browser
+
+.press() =/\ page.keyboard.press(<key>+<key>) or page.locator.press(<key>+<key>)
+.down() =/\ page.keyboard.down('Shift')
+.up() =/\ page.keyboard.down('Up')
+.insertText()=/\ keyboard.insertText()
+.type()=/\ page.type() or page.locator().type("String")
+
+Drop Downs:=>
+Dropdowns are a common UI element in web application, used to present a list of options from which a user can make a selection.
+    1.standard (Native) Drop down
+    2.multi-select dropdowns
+    3.custom dropdowns
+    4.Autosuggest/searchable dropdown
+
+
+WINDOW HANDLES
+-NEW TAB 
+-> for tab and Window let [page1]=await Promise.all([page.waitForEvent('popup'),page.click('element-id')])
+-AUTHENTICATION popup
+-FILE UPLOAD / DOWNLOAD
+-ALERT AND NOTIFICATION
+
+WHAT ARE FRAMES?
+
+A frames (specially, an <iframe>)is an HTML element that embeds another HTML document inside the current page. It acts like a "page within page".
+Example:
+<iframe src="https://example.com/frame.html" name="login-frame"></iframe>
+
+Frames are used when:
+-A third-party service is embedded on a websites
+-Content needs to be loaded independently
+
+// Locate element inside frame
+const username = await page.frameLocator('.frame-class').getByLabel('User Name');
+await username.fill('John');
+
+Frame objects
+One can access frame objects using the page.frame() API:
+
+// Get frame using the frame's name attribute
+const frame = page.frame('frame-login');
+
+// Get frame using frame's URL
+const frame = page.frame({ url: /.*domain.*/ });
+
+// Interact with the frame
+await frame.fill('#username-input', 'John');
+
+
+DIALOGUES
+
+Dialogs are browser-generated pop-ups triggered by JavaScript on a web page.They interrupt user interaction and require a response before continuing
+
+In playwright,dialogs refer to native browser dialogs such as:
+-ALERT
+-confirm
+-prompt
+
+page.on-> for whole page
+page.on('dialog',async(dialog)={dialog.accept('Message')})
+page.once-> for accepting once
+page.once('dialog',async(dialog)={dialog.accept('Message')})
+
+
+NOTIFICATION POPUPS:
+
+Notification a browser level feature, also called as browser native popup, allows websites to diplay message even though you are not working on it.
+In playwright, notifications refer to browser-level messages triggdered using the Notification API,which can be permitted or denied through browser context permissions for testing.
+-permission popup
+-web push notification
+
+
+DATA DRIVEN TESTING
+
+for excel- install excel package
+npm install exceljs
+
+//hooks in playwright, session capture,custom fixtures
+HOOKS=>
+In Playwright, hooks are functions used to perform setup and cleanup actions before or after tests.
+
+Main Playwright hooks
+Hook	Purpose
+test.beforeAll()	Runs once before all tests in a file
+test.afterAll()	Runs once after all tests in a file
+test.beforeEach()	Runs before every test
+test.afterEach()	Runs after every test
+
+POM(Page Object Model)
+Object ia a real time entity which is enclose with properties and methods
+let obj={key:value}
+
+=========important===========
+&&  → first falsy, otherwise last
+||  → first truthy, otherwise last
+!   → reverse Boolean
+??  → null/undefined → right side
+
+
+

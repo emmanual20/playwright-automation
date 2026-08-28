@@ -1,0 +1,55 @@
+Filling Payramid in Element Username
+Filled Payramid in Element Username
+Filling Pass@123 in Element Password
+Filled Pass@123 in Element Password
+Check checkbox
+Checkbox checked
+Clicking element : Login Button
+Clicked element : Login Button
+Dashboard Header checking Visibility
+Dashboard Header is Present and Visible
+Clicking element : Click on Table
+Clicked element : Click on Table
+Verify Tables Header contain Tables Lab
+Tables Header contains Tables Lab
+
+100
+Arun 1
+QA
+Inactive
+
+101
+Priya 2
+Developer
+Active
+
+102
+Rahul 3
+Player
+Active
+
+103
+Neha 4
+Admin
+Inactive
+
+104
+Pavan 5
+QA
+Active
+
+105
+Arun 6
+Developer
+Active
+
+106
+Priya 7
+Player
+Inactive
+
+107
+Rahul 8
+Admin
+Active
+undefined
