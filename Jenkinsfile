@@ -2,91 +2,188 @@ pipeline {
 
     agent any
 
+    // =========================================================
+    // PARAMETERS
+    // =========================================================
+    parameters {
+
+        choice(
+            name: 'TEST_FILE',
+            choices: [
+                'ALL',
+                'tests/troyGamesProject/login.test.ts',
+                'tests/troyGamesProject/dashboard.test.ts',
+                'tests/troyGamesProject/users.test.ts'
+            ],
+            description: 'Select the Playwright test file to execute'
+        )
+
+        string(
+            name: 'TEST_NAME',
+            defaultValue: '',
+            description: 'Optional: Enter exact/partial Playwright test name. Example: valid login test'
+        )
+    }
+
+
     stages {
 
-        // ==========================================
-        // 1. Checkout code from GitHub
-        // ==========================================
+        // =====================================================
+        // 1. CHECKOUT
+        // =====================================================
         stage('Checkout') {
+
             steps {
+
+                echo '======================================'
                 echo 'Checking out code from GitHub...'
+                echo '======================================'
+
                 checkout scm
             }
         }
 
 
-        // ==========================================
-        // 2. Install npm dependencies
-        // ==========================================
+        // =====================================================
+        // 2. INSTALL DEPENDENCIES
+        // =====================================================
         stage('Install Dependencies') {
+
             steps {
+
+                echo '======================================'
                 echo 'Installing npm dependencies...'
+                echo '======================================'
+
                 bat 'npm ci'
             }
         }
 
 
-        // ==========================================
-        // 3. Install Playwright browser
-        // ==========================================
+        // =====================================================
+        // 3. INSTALL PLAYWRIGHT
+        // =====================================================
         stage('Install Playwright Browser') {
+
             steps {
+
+                echo '======================================'
                 echo 'Installing Playwright Chromium...'
+                echo '======================================'
+
                 bat 'npx playwright install chromium'
             }
         }
 
 
-        // ==========================================
-        // 4. Run Playwright tests
-        // ==========================================
-        stage('Run Playwright Tests') {
-            steps {
-                echo 'Running Playwright tests...'
+        // =====================================================
+        // 4. DISPLAY TEST SELECTION
+        // =====================================================
+        stage('Test Selection') {
 
-                bat '''
-                    npx playwright test
-                '''
+            steps {
+
+                echo '======================================'
+                echo 'TEST EXECUTION DETAILS'
+                echo '======================================'
+
+                echo "Test File : ${params.TEST_FILE}"
+                echo "Test Name : ${params.TEST_NAME}"
+
+                echo '======================================'
             }
         }
 
 
-        // ==========================================
-        // 5. Create ZIP of Playwright report
-        // ==========================================
-        stage('Create Report ZIP') {
-            steps {
-                echo 'Creating Playwright report ZIP...'
+        // =====================================================
+        // 5. RUN PLAYWRIGHT TEST
+        // =====================================================
+        stage('Run Playwright Tests') {
 
-                bat '''
-                    if exist playwright-report (
-                        powershell -Command "Compress-Archive -Path playwright-report -DestinationPath playwright-report.zip -Force"
-                    ) else (
-                        echo Playwright report folder not found
-                    )
-                '''
+            steps {
+
+                script {
+
+                    def command = 'npx playwright test'
+
+
+                    // -------------------------------------------------
+                    // If a specific test file is selected
+                    // -------------------------------------------------
+                    if (params.TEST_FILE != 'ALL') {
+
+                        command = "npx playwright test \"${params.TEST_FILE}\""
+                    }
+
+
+                    // -------------------------------------------------
+                    // If a specific test name is entered
+                    // -------------------------------------------------
+                    if (params.TEST_NAME?.trim()) {
+
+                        command = "${command} -g \"${params.TEST_NAME}\""
+                    }
+
+
+                    echo '======================================'
+                    echo 'PLAYWRIGHT COMMAND'
+                    echo '======================================'
+
+                    echo command
+
+                    echo '======================================'
+                    echo 'Running Playwright tests...'
+                    echo '======================================'
+
+
+                    bat command
+                }
             }
         }
     }
 
 
-    // ==========================================
+    // =========================================================
     // POST ACTIONS
-    // ==========================================
+    // =========================================================
     post {
 
-        // ------------------------------------------
-        // Always execute
-        // ------------------------------------------
         always {
 
-            echo 'Archiving Playwright report...'
+            echo '======================================'
+            echo 'Creating Playwright Report ZIP...'
+            echo '======================================'
+
+
+            // -------------------------------------------------
+            // Create ZIP even when test fails
+            // -------------------------------------------------
+            bat '''
+                if exist playwright-report (
+                    powershell -NoProfile -Command "if (Test-Path 'playwright-report.zip') { Remove-Item 'playwright-report.zip' -Force }; Compress-Archive -Path 'playwright-report' -DestinationPath 'playwright-report.zip' -Force"
+                    echo Playwright report ZIP created successfully.
+                ) else (
+                    echo Playwright report folder not found.
+                )
+            '''
+
+
+            // -------------------------------------------------
+            // Archive HTML report
+            // -------------------------------------------------
+            echo 'Archiving Playwright HTML report...'
 
             archiveArtifacts(
                 artifacts: 'playwright-report/**',
                 allowEmptyArchive: true,
                 fingerprint: true
             )
+
+
+            // -------------------------------------------------
+            // Archive ZIP
+            // -------------------------------------------------
+            echo 'Archiving Playwright ZIP report...'
 
             archiveArtifacts(
                 artifacts: 'playwright-report.zip',
@@ -95,17 +192,16 @@ pipeline {
             )
 
 
-            // --------------------------------------
-            // Send email
-            // --------------------------------------
+            // -------------------------------------------------
+            // Send Email
+            // -------------------------------------------------
+            echo 'Sending Playwright report by email...'
+
             emailext(
 
                 to: 'emanualreeves@gmail.com',
 
-                subject: """
-                    Playwright Test Result - ${currentBuild.currentResult}
-                    - Build #${env.BUILD_NUMBER}
-                """,
+                subject: "Playwright Test Result - ${currentBuild.currentResult} - Build #${env.BUILD_NUMBER}",
 
                 body: """
                     <html>
@@ -115,6 +211,8 @@ pipeline {
                         <h2>🎭 Playwright Automation Report</h2>
 
                         <hr>
+
+                        <h3>Execution Details</h3>
 
                         <p>
                             <b>Project:</b> ${env.JOB_NAME}
@@ -129,9 +227,21 @@ pipeline {
                         </p>
 
                         <p>
-                            <b>Build URL:</b>
+                            <b>Test File:</b> ${params.TEST_FILE}
+                        </p>
+
+                        <p>
+                            <b>Test Name:</b>
+                            ${params.TEST_NAME ?: 'All tests'}
+                        </p>
+
+                        <hr>
+
+                        <h3>Jenkins Build</h3>
+
+                        <p>
                             <a href="${env.BUILD_URL}">
-                                Open Jenkins Build
+                                Open Jenkins Build #${env.BUILD_NUMBER}
                             </a>
                         </p>
 
@@ -149,11 +259,15 @@ pipeline {
                         <hr>
 
                         <p>
-                            <b>Jenkins Job:</b> ${env.JOB_NAME}
+                            <b>Job:</b> ${env.JOB_NAME}
                         </p>
 
                         <p>
                             <b>Build:</b> #${env.BUILD_NUMBER}
+                        </p>
+
+                        <p>
+                            <b>Result:</b> ${currentBuild.currentResult}
                         </p>
 
                     </body>
@@ -168,36 +282,42 @@ pipeline {
         }
 
 
-        // ------------------------------------------
-        // Test passed
-        // ------------------------------------------
+        // =====================================================
+        // SUCCESS
+        // =====================================================
         success {
 
+            echo ''
             echo '======================================'
             echo '✅ PLAYWRIGHT TESTS PASSED'
             echo '======================================'
+            echo ''
         }
 
 
-        // ------------------------------------------
-        // Test failed
-        // ------------------------------------------
+        // =====================================================
+        // FAILURE
+        // =====================================================
         failure {
 
+            echo ''
             echo '======================================'
             echo '❌ PLAYWRIGHT TESTS FAILED'
             echo '======================================'
+            echo ''
         }
 
 
-        // ------------------------------------------
-        // Aborted
-        // ------------------------------------------
+        // =====================================================
+        // ABORTED
+        // =====================================================
         aborted {
 
+            echo ''
             echo '======================================'
             echo '⚠️ PLAYWRIGHT BUILD ABORTED'
             echo '======================================'
+            echo ''
         }
     }
 }
