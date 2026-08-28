@@ -34,7 +34,7 @@ export default defineConfig({
   reporter:  [
   ['list'],
   ['html', { outputFolder: 'playwright-report', open: 'never'}],
-  ['allure-playwright'],["ortoni-report", reportConfig]
+  ["ortoni-report", reportConfig]
 ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {

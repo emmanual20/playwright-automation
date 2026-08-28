@@ -1,0 +1,23 @@
+Filling Payramid in Element Username
+Filled Payramid in Element Username
+Filling Pass@123 in Element Password
+Filled Pass@123 in Element Password
+Check checkbox
+Checkbox checked
+Clicking element : Login Button
+Clicked element : Login Button
+Dashboard Header checking Visibility
+Dashboard Header is Present and Visible
+Clicking element : Windows Link
+Clicked element : Windows Link
+clicked on windows Successfully
+Verify Tables Header contain Windows & Tabs
+Tables Header contains Windows & Tabs
+Clicking element : Open New tab
+Clicked element : Open New tab
+clicked on open New Tab Successfully
+Filling Open new Window in Element Open new Window
+Filled Open new Window in Element Open new Window
+Clicking element : Click action
+Clicked element : Click action
+Verify Success Message contain New window action completed!

@@ -3,21 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {"test": "playwright test",
+  "scripts": {
+    "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:login": "playwright test tests/troyGamesProject/login.spec.ts",
-    "report": "playwright show-report"},
+    "report": "playwright show-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "typescript": "^5.9.3",
     "@types/node": "^26.2.0",
     "allure": "^3.14.3",
-    "allure-playwright": "^3.10.2",
-    "ortoni-report": "^4.10.0"
+    "ortoni-report": "^4.10.0",
+    "typescript": "^5.9.3"
   }
 }
-
